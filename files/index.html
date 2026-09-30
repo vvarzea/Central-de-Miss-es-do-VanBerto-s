@@ -64,6 +64,10 @@ body::before{
 @keyframes starsTwinkle{0%{opacity:0.5;}50%{opacity:1;}100%{opacity:0.65;}}
 
 .balloon{position:fixed;bottom:-120px;pointer-events:none;animation:balloonRise linear infinite;z-index:10;}
+@media(max-height:500px){.hero-icon,.hero-stats,.modal-sub{display:none;}.modal-hero{padding:6px 16px;}}
+.reset-btn{align-self:center;margin:14px 0 0;background:none;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85);border-radius:20px;padding:6px 14px;font:700 12px 'Nunito',sans-serif;cursor:pointer;flex-shrink:0;}
+.reset-btn:focus-visible{outline:2px solid #ffd700;outline-offset:2px;}
+.reset-btn[hidden]{display:none;}
 @media(max-width:600px){.balloon:nth-of-type(n+4),.confetti-piece{display:none;}}
 @media(max-width:360px){.balloon{display:none;}}
 @keyframes balloonRise{
@@ -406,7 +410,12 @@ function markPlayed(id){try{const p=getPlayed();if(p.indexOf(id)<0){p.push(id);l
     }).join('')+'</div>';
   }).join('');
   document.getElementById('total-a').textContent=total;document.getElementById('total-b').textContent=total;
-  document.getElementById('games').addEventListener('click',function(e){const a=e.target.closest('.game-card');if(a)markPlayed(a.dataset.id);});
+  const box=document.getElementById('games');
+  const btn=document.createElement('button');btn.type='button';btn.className='reset-btn';btn.textContent='↺ Recomeçar (limpar os ✓)';box.appendChild(btn);
+  function refresh(){const p=getPlayed();box.querySelectorAll('.game-card').forEach(function(a){a.classList.toggle('played',p.indexOf(a.dataset.id)>=0);});btn.hidden=!p.length;}
+  box.addEventListener('click',function(e){const a=e.target.closest('.game-card');if(a)markPlayed(a.dataset.id);});
+  btn.addEventListener('click',function(){try{localStorage.removeItem('vb-played');}catch(e){}refresh();});
+  window.addEventListener('pageshow',refresh);refresh();
 })();
 function rrVan(ctx,x,y,w,h,r){
   const rr=Math.min(r,w/2,h/2);
@@ -630,6 +639,7 @@ vbRobot.addEventListener('keydown',function(e){
 });
 
 setTimeout(function(){showBub('Olá! Sou o VanBerto\'s! Escolhe a tua missão! 🛡️');},900);
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 </script>
 </body>
 </html>
