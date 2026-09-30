@@ -45,6 +45,7 @@ body{
 @media (prefers-reduced-motion: reduce) {
   *{animation:none !important;transition:none !important;}
 }
+html.no-anim *,html.no-anim *::before,html.no-anim *::after{animation:none !important;transition:none !important;}
 
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -67,7 +68,7 @@ body::before{
 
 .balloon{position:fixed;bottom:-120px;pointer-events:none;animation:balloonRise linear infinite;z-index:10;}
 @media(max-height:500px){.hero-icon,.hero-stats,.modal-sub{display:none;}.modal-hero{padding:6px 16px;}}
-.reset-btn{align-self:center;margin:14px 0 0;background:none;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85);border-radius:20px;padding:6px 14px;font:700 12px 'Nunito',sans-serif;cursor:pointer;flex-shrink:0;}
+.reset-btn{align-self:center;margin:14px 0 0;min-height:44px;min-width:44px;background:none;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85);border-radius:20px;padding:6px 14px;font:700 12px 'Nunito',sans-serif;cursor:pointer;flex-shrink:0;}
 .reset-btn:focus-visible{outline:2px solid #ffd700;outline-offset:2px;}
 .reset-btn[hidden]{display:none;}
 @media(max-width:600px){.balloon:nth-of-type(n+4),.confetti-piece{display:none;}}
@@ -418,6 +419,10 @@ function markPlayed(id){try{const p=getPlayed();if(p.indexOf(id)<0){p.push(id);l
   box.addEventListener('click',function(e){const a=e.target.closest('.game-card');if(a)markPlayed(a.dataset.id);});
   btn.addEventListener('click',function(){try{localStorage.removeItem('vb-played');}catch(e){}refresh();});
   window.addEventListener('pageshow',refresh);refresh();
+  const root=document.documentElement,pb=document.createElement('button');pb.type='button';pb.className='reset-btn';box.appendChild(pb);
+  function setAnim(off,save){root.classList.toggle('no-anim',off);pb.setAttribute('aria-pressed',off);pb.textContent=off?'▶ Ativar animações':'⏸ Pausar animações';if(save){try{localStorage.setItem('vb-anim',off?'off':'on');}catch(e){}}}
+  let saved=null;try{saved=localStorage.getItem('vb-anim');}catch(e){}
+  setAnim(saved==='off',false);pb.addEventListener('click',function(){setAnim(!root.classList.contains('no-anim'),true);});
 })();
 function rrVan(ctx,x,y,w,h,r){
   const rr=Math.min(r,w/2,h/2);
@@ -622,7 +627,7 @@ function vbJump(){
 }
 
 setInterval(()=>{
-  if(vbBusy||document.hidden||REDUCED)return;
+  if(vbBusy||document.hidden||REDUCED||document.documentElement.classList.contains('no-anim'))return;
   const r=Math.random();
   if(r<0.18)vbJump();
   else if(r<0.5)vbWalk();
