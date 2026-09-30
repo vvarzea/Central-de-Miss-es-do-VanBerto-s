@@ -2,6 +2,7 @@
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Central de Missões do VanBerto's — Cibersegurança</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -17,6 +18,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="VanBerto's">
 <style>
+:where(h1,h2,h3){margin:0;font:inherit;}
 @font-face{font-family:'Fredoka';src:url(fonts/fredoka-latin-wght-normal.woff2) format('woff2');font-weight:300 700;font-display:swap;}
 @font-face{font-family:'Nunito';src:url(fonts/nunito-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:swap;}
 @font-face{font-family:'Nunito';src:url(fonts/nunito-latin-600-normal.woff2) format('woff2');font-weight:600;font-display:swap;}
@@ -64,6 +66,10 @@ body::before{
 @keyframes starsTwinkle{0%{opacity:0.5;}50%{opacity:1;}100%{opacity:0.65;}}
 
 .balloon{position:fixed;bottom:-120px;pointer-events:none;animation:balloonRise linear infinite;z-index:10;}
+@media(max-height:500px){.hero-icon,.hero-stats,.modal-sub{display:none;}.modal-hero{padding:6px 16px;}}
+.reset-btn{align-self:center;margin:14px 0 0;background:none;border:1px solid rgba(255,255,255,0.35);color:rgba(255,255,255,0.85);border-radius:20px;padding:6px 14px;font:700 12px 'Nunito',sans-serif;cursor:pointer;flex-shrink:0;}
+.reset-btn:focus-visible{outline:2px solid #ffd700;outline-offset:2px;}
+.reset-btn[hidden]{display:none;}
 @media(max-width:600px){.balloon:nth-of-type(n+4),.confetti-piece{display:none;}}
 @media(max-width:360px){.balloon{display:none;}}
 @keyframes balloonRise{
@@ -347,11 +353,11 @@ body::before{
 <div class="confetti-piece" aria-hidden="true" style="left:91%;background:#ff6b35;animation-duration:7.5s;animation-delay:1s;border-radius:2px;"></div>
 
 <div class="modal-wrap">
-  <div class="card">
+  <main class="card">
 
     <div class="modal-hero">
       <div class="hero-icon" aria-hidden="true">🛡️</div>
-      <div class="modal-title">Central de Missões do VanBerto's</div>
+      <h1 class="modal-title">Central de Missões do VanBerto's</h1>
       <div class="modal-sub"><span id="total-a">9</span> jogos sobre cibersegurança — escolhe a tua missão</div>
       <div class="hero-stats">
         <span class="stat-badge">🛡️ <span id="total-b">9</span> jogos</span>
@@ -363,15 +369,15 @@ body::before{
     </div>
 
     <div class="games-section" id="games"></div>
-  </div>
+  </main>
 
-  <div id="fixed-robot-wrap">
+  <div id="fixed-robot-wrap" role="complementary" aria-label="Mascote VanBerto's">
     <div id="fixed-bubble" role="status" aria-live="polite">Olá! Sou o VanBerto's! Escolhe a tua missão! 🛡️</div>
     <canvas id="fixed-vb-robot" width="96" height="96" role="button" tabindex="0" aria-label="VanBerto's — clica para falar"></canvas>
     <div id="fixed-robot-name">VanBerto's</div>
   </div>
 
-  <div id="prof-tag">© Prof.ª Vanda Várzea</div>
+  <footer id="prof-tag">© Prof.ª Vanda Várzea</footer>
 </div>
 
 <script>
@@ -398,15 +404,20 @@ function markPlayed(id){try{const p=getPlayed();if(p.indexOf(id)<0){p.push(id);l
   const played=getPlayed();let total=0;
   document.getElementById('games').innerHTML=SECTIONS.map(function(sec){
     total+=sec.g.length;
-    return '<div class="section-divider">'+esc(sec.t)+' <span class="section-count">'+sec.g.length+(sec.g.length===1?' jogo':' jogos')+'</span></div>'+
+    return '<h2 class="section-divider">'+esc(sec.t)+' <span class="section-count">'+sec.g.length+(sec.g.length===1?' jogo':' jogos')+'</span></h2>'+
     '<div class="games-grid '+(sec.g.length===1?'games-grid-1':'games-grid-2')+'">'+sec.g.map(function(g){
       const url=g.u||(BASE+g.p+'/');
       return '<a class="game-card'+(played.indexOf(g.id)>=0?' played':'')+'" data-id="'+g.id+'" href="'+url+'"'+(NEW_TAB?' target="_blank" rel="noopener noreferrer"':' rel="noopener"')+' style="--gc:'+g.c+';--gc-glow:rgba('+g.r+');">'+
-      '<div class="game-icon-tile" aria-hidden="true">'+g.i+'</div><div class="game-info"><div class="game-name">'+esc(g.n)+'</div><div class="game-desc">'+esc(g.d)+'</div><span class="game-tag">'+esc(g.tag)+'</span></div></a>';
+      '<div class="game-icon-tile" aria-hidden="true">'+g.i+'</div><div class="game-info"><h3 class="game-name">'+esc(g.n)+'</h3><div class="game-desc">'+esc(g.d)+'</div><span class="game-tag">'+esc(g.tag)+'</span></div></a>';
     }).join('')+'</div>';
   }).join('');
   document.getElementById('total-a').textContent=total;document.getElementById('total-b').textContent=total;
-  document.getElementById('games').addEventListener('click',function(e){const a=e.target.closest('.game-card');if(a)markPlayed(a.dataset.id);});
+  const box=document.getElementById('games');
+  const btn=document.createElement('button');btn.type='button';btn.className='reset-btn';btn.textContent='↺ Recomeçar (limpar os ✓)';box.appendChild(btn);
+  function refresh(){const p=getPlayed();box.querySelectorAll('.game-card').forEach(function(a){a.classList.toggle('played',p.indexOf(a.dataset.id)>=0);});btn.hidden=!p.length;}
+  box.addEventListener('click',function(e){const a=e.target.closest('.game-card');if(a)markPlayed(a.dataset.id);});
+  btn.addEventListener('click',function(){try{localStorage.removeItem('vb-played');}catch(e){}refresh();});
+  window.addEventListener('pageshow',refresh);refresh();
 })();
 function rrVan(ctx,x,y,w,h,r){
   const rr=Math.min(r,w/2,h/2);
@@ -630,6 +641,7 @@ vbRobot.addEventListener('keydown',function(e){
 });
 
 setTimeout(function(){showBub('Olá! Sou o VanBerto\'s! Escolhe a tua missão! 🛡️');},900);
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 </script>
 </body>
 </html>
