@@ -17,7 +17,7 @@ import { onCollectItem, onHitMalware, poweredCountdownVal } from "./items.js?v=2
 import { loadLevel, updateHUD, updateHearts, updateProgressBar } from "./level.js?v=20261003v101";
 import { BG_FILES, _bootLevelIdx, bgKeyForLevel, prefersReducedMotion, renderMap, setupBackgroundLoading } from "./map.js?v=20261003v101";
 import { SECONDARY_OVERLAYS, closeAllSecondaryOverlays, loadGame, openOverlay, saveGame } from "./overlays.js?v=20261003v101";
-import { clearQuizReview, quizStats, resetQuizStats, showHistory, usedQuizByLevel, usedQuizByTheme } from "./quiz.js?v=20261003v101";
+import { quizStats, resetQuizStats, showHistory, usedQuizByLevel, usedQuizByTheme } from "./quiz.js?v=20261003v101";
 import { exitCrouch, setCrouchHitbox, tryEnterPipe } from "./rooms.js?v=20261003v101";
 import { COYOTE_MS, GRAVITY, JUMP_BUFFER_MS, _critterSession, _doorAnimRunning, _doorWatchdogTimer, _hudDirty, _landingCheckTimer, _overlayPaused, _pipeDownWasHeld, _pipeWarping, _suppressCrouchUntilRelease, awaitingQuiz, awaitingStory, balloons, bossState, controlsInvertedUntil, coyoteUntil, critters, currentLevel, cursors, door, doorOverlap, doubleJumpActive, doubleJumpUsed, getStartLives, hazards, inBossFight, inSecretRoom, invuln, isCrouching, itemsGroup, jumpBufferedUntil, keyS, keySpace, lives, malwareGroup, mapProgress, pauseOverlayGfx, pausedByTeacher, pipes, platforms, player, powerHaloGfx, powered, progressBg, progressFill, resetPipeWarpState, sceneRef, score, scoreText, set__doorAnimRunning, set__doorWatchdogTimer, set__historySubOpen, set__hudDirty, set__landingCheckTimer, set__overlayPaused, set__pipeDownWasHeld, set__suppressCrouchUntilRelease, set_awaitingQuiz, set_awaitingStory, set_coyoteUntil, set_cursors, set_difficultyBadge, set_doorOverlap, set_doubleJumpUsed, set_heartsGfx, set_hudText, set_isCrouching, set_itemCountText, set_itemsGroup, set_jumpBufferedUntil, set_keyS, set_keySpace, set_lives, set_livesLostThisLevel, set_malwareGroup, set_pauseOverlayGfx, set_pausedByTeacher, set_platforms, set_player, set_playerNameHUD, set_powerHaloGfx, set_powerIndicator, set_progressBg, set_progressFill, set_sceneRef, set_score, set_scoreText, set_shadowGfx, set_sunAngle, set_tipText, set_transitionGfx, set_transitionLabel, shadowGfx, starPower, starPowerCountVal, sunAngle, touch, updateDifficultyBadge } from "./state.js?v=20261003v101";
 import { flushScoreToStats } from "./stats.js?v=20261003v101";
@@ -272,7 +272,7 @@ function create() {
       set__doorAnimRunning( false);
       touch.left=touch.right=touch.jump=touch.crouch=false;
       flushScoreToStats(); set_score(0); set_lives(getStartLives()); set_livesLostThisLevel(0);
-      resetQuizStats(); Object.keys(usedQuizByLevel).forEach(k=>usedQuizByLevel[k].clear()); Object.keys(usedQuizByTheme).forEach(k=>usedQuizByTheme[k].clear()); clearQuizReview();
+      resetQuizStats(); Object.keys(usedQuizByLevel).forEach(k=>usedQuizByLevel[k].clear()); Object.keys(usedQuizByTheme).forEach(k=>usedQuizByTheme[k].clear());
       scoreText.setText(`🌟 Pontos: ${score}`); updateHearts();
       loadLevel(sceneRef,0);
       showHistory(0, () => { set_awaitingQuiz(false); if(!pausedByTeacher) sceneRef.physics.resume(); });

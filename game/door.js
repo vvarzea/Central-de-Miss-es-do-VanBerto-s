@@ -11,7 +11,7 @@ import { showLevelCompleteCelebration, showRightRecovered } from "./artefacts.js
 import { quizOverlay } from "./dom.js?v=20261003v101";
 import { nextLevel } from "./flow.js?v=20261003v101";
 import { markLevelCompleted } from "./map.js?v=20261003v101";
-import { pickQuizForLevel, showQuiz, withQuizReview } from "./quiz.js?v=20261003v101";
+import { pickQuizForLevel, showQuiz } from "./quiz.js?v=20261003v101";
 import { snapPlayerToGround } from "./rooms.js?v=20261003v101";
 import { _doorAnimRunning, _doorWatchdogTimer, _landingCheckTimer, _levelAtDoorTrigger, _starMelodyInterval, awaitingQuiz, awaitingStory, currentLevel, door, doorOverlap, doubleJumpCountdown, doubleJumpTimer, invuln, invulnBlinkEvent, invulnEndEvent, itemsCollected, itemsTotal, livesLostThisLevel, mapProgress, player, playerName, powerCountdown, powerHaloGfx, poweredTimer, set__doorAnimRunning, set__doorWatchdogTimer, set__landingCheckTimer, set__levelAtDoorTrigger, set__starMelodyInterval, set_awaitingQuiz, set_doorOverlap, set_doubleJumpActive, set_doubleJumpCountdown, set_doubleJumpTimer, set_invuln, set_invulnBlinkEvent, set_invulnEndEvent, set_lastQuizTheme, set_powerCountdown, set_powered, set_poweredTimer, set_starPower, set_starPowerCountdown, set_starPowerTimer, shadowGfx, starPowerCountdown, starPowerTimer, touch } from "./state.js?v=20261003v101";
 import { playVanBertoDance } from "./vanberto.js?v=20261003v101";
@@ -128,7 +128,7 @@ function showQuizAfterDoorAnimation(scene){
     if(!awaitingQuiz) return; // segurança: só mostrar se ainda estamos à espera
     set__doorAnimRunning( false); // reset para próxima porta
     set_lastQuizTheme( LEVELS[currentLevel].quizTheme);
-    withQuizReview(() => showQuiz(pickQuizForLevel(currentLevel, LEVELS[currentLevel].quizTheme), (ok) => {
+    showQuiz(pickQuizForLevel(currentLevel, LEVELS[currentLevel].quizTheme), (ok) => {
       if(ok){
         ensureAudio();
         finalizeLevelStars(currentLevel, livesLostThisLevel, itemsCollected, itemsTotal);
@@ -148,7 +148,7 @@ function showQuizAfterDoorAnimation(scene){
           nextLevel(scene);
         });
       }
-    }));
+    });
   });
 }
 

@@ -8,7 +8,7 @@
  *************************************************/
 
 import { isLastLevelOfRegion, saveMapProgress } from "./map.js?v=20261003v101";
-import { clearQuizReview, resetQuizStats, usedQuizByLevel, usedQuizByTheme } from "./quiz.js?v=20261003v101";
+import { resetQuizStats, usedQuizByLevel, usedQuizByTheme } from "./quiz.js?v=20261003v101";
 import { itemsTotal, mapProgress, score, scoreText, set_mapProgress, set_score } from "./state.js?v=20261003v101";
 import { globalStats, saveGlobalStats } from "./stats.js?v=20261003v101";
 import { loadNamespace, saveNamespace } from "../storage.js?v=20261003v101";
@@ -110,7 +110,6 @@ export function resetAllProgress() {
   resetQuizStats();
   Object.keys(usedQuizByLevel).forEach(k => usedQuizByLevel[k].clear());
   Object.keys(usedQuizByTheme).forEach(k => usedQuizByTheme[k].clear());
-  clearQuizReview();
 }
 
 // Verifica se um conjunto de 5 artefactos ficou completo agora
