@@ -14,9 +14,7 @@ Sem *build step*: os ficheiros publicam-se tal como estão (GitHub Pages).
   | Fortaleza da Proteção Digital | 10–15 | Robô do Spam |
   | Cidade da Identidade Digital | 16–20 | Espião das Sombras |
 
-- **Quiz** no fim de cada nível (e outro depois de vencer cada boss). Uma pergunta falhada à 1.ª tentativa volta mais tarde
-  (pelo menos 2 níveis depois) como **«Revisão rápida»**, antes do quiz do nível: sem perder vidas e sem contar para pontos,
-  estatísticas ou certificado; acertar (ou falhar 2 revisões) tira-a da lista. Estrelas por nível (até 3),
+- **Quiz** no fim de cada nível (e outro depois de vencer cada boss). Estrelas por nível (até 3),
   artefactos, conquistas, mapa da aventura e certificado.
 - **Sem perguntas repetidas** numa aventura: os 20 níveis usam 20 temas distintos (um por nível), e dentro de cada
   tema uma pergunta só volta a sair depois de todas as outras do banco terem saído (`pickQuizForLevel`,
