@@ -55,6 +55,9 @@ function buildQuizOptions(quiz) {
 // Preenche a lista #reviewList com as perguntas erradas da tentativa atual.
 
 
+// Escapa texto vindo do localStorage (os erros guardados) antes de o pôr em innerHTML.
+const escHTML = (v) => String(v ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
 function populateReviewList(source = "attempt") {
   const reviewList = document.getElementById("reviewList");
   if (!reviewList) return;
@@ -73,9 +76,9 @@ function populateReviewList(source = "attempt") {
     div.className="review-question";
     div.innerHTML=`
         ${art?`<div style="margin-bottom:5px;"><span class="quiz-article-badge">📜 ${art}</span></div>`:""}
-        <div class="review-question-text">${i+1}. ${e.level} — ${e.q}</div>
-        <div class="review-wrong">❌ A tua resposta: <strong>${e.wrong}</strong></div>
-        <div class="review-correct">✅ Resposta certa: <strong>${e.correct}</strong></div>
+        <div class="review-question-text">${i+1}. ${escHTML(e.level)} — ${escHTML(e.q)}</div>
+        <div class="review-wrong">❌ A tua resposta: <strong>${escHTML(e.wrong)}</strong></div>
+        <div class="review-correct">✅ Resposta certa: <strong>${escHTML(e.correct)}</strong></div>
         ${exp?`<div class="review-explanation">💡 ${exp}</div>`:""}
       `;
     reviewList.appendChild(div);

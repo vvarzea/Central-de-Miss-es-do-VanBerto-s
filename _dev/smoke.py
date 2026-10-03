@@ -18,6 +18,14 @@ srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(Quiet,
 BASE = f"http://127.0.0.1:{srv.server_address[1]}"
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 
+def wait_js(pg, expr, timeout=15000):
+    """Como pg.wait_for_function, mas sem eval: a Content-Security-Policy do jogo proíbe 'unsafe-eval', que o wait_for_function usa por dentro."""
+    end = time.time() + timeout / 1000
+    while time.time() < end:
+        if pg.evaluate("() => !!(" + expr + ")"): return
+        time.sleep(0.2)
+    raise AssertionError("tempo esgotado à espera de: " + expr[:80])
+
 def new_page(browser, w=960, h=600, touch=False, reduced=False, route=None, errs=None, external=None):
     # service_workers="block": estes testes interceptam pedidos com page.route, que não vê os pedidos tratados por um service worker.
     # O service worker tem testes próprios (abaixo).
@@ -74,7 +82,7 @@ TELEPORT_JS = """async()=>{ const s=window.__dc_game.scene.scenes[0], kids=s.chi
 
 def teleport_to_door(pg):
     """Apanha os itens do nível e vai ao portal. Repete se o nível ainda estiver a montar-se (evita falhas esporádicas)."""
-    pg.wait_for_function("window.__dc_game.scene.scenes[0].children.list.some(c=>c.texture&&/^door/.test(c.texture.key))", timeout=20000)
+    wait_js(pg, "window.__dc_game.scene.scenes[0].children.list.some(c=>c.texture&&/^door/.test(c.texture.key))", 20000)
     for attempt in range(4):
         pg.wait_for_timeout(800 if attempt == 0 else 1800)
         try:
@@ -368,11 +376,11 @@ with sync_playwright() as p:
         save = {"map": {"highestLevelReached": 19, "levelsCompleted": list(range(19))}}
         pg.add_init_script("localStorage.setItem('vanbertos_ciberseguranca_save_v1', %s)" % json.dumps(json.dumps(save)))
         pg.goto(BASE + "/index.html", wait_until="networkidle")
-        pg.wait_for_function("navigator.serviceWorker.controller", timeout=15000)
+        wait_js(pg, "navigator.serviceWorker.controller", 15000)
         pg.click("#btnOptions"); pg.wait_for_selector("#optionsOverlay:not(.hidden)")
         assert pg.evaluate("getComputedStyle(document.getElementById('optionsOfflineSection')).display") != "none", "secção «Jogar sem rede» escondida com service worker ativo"
         pg.click("#optBtnDownloadAll")
-        pg.wait_for_function("document.getElementById('offlineDownloadStatus').textContent.length>0", timeout=30000)
+        wait_js(pg, "document.getElementById('offlineDownloadStatus').textContent.length>0", 30000)
         status = pg.evaluate("document.getElementById('offlineDownloadStatus').textContent")
         assert "Tudo guardado" in status, f"estado inesperado: {status!r}"
         n = pg.evaluate(r"(name)=>caches.open(name).then(c=>c.keys()).then(ks=>ks.filter(k=>/\.webp$/.test(k.url)).length)", "vanbertos-" + STAMP)
